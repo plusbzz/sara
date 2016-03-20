@@ -212,8 +212,8 @@ controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, 
     var apiai_request = apiai_app.textRequest(message.text);
     console.log(message.text)
     apiai_request.on('response', function(response) {
-        console.log(response)
-        bot.reply(response);
+        console.log(response.result.fulfillment.speech)
+        bot.reply(response.result.fulfillment.speech);
     });
     apiai_request.on('error', function(error) {
       controller.storage.users.get(message.user,function(err, user) {
