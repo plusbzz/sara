@@ -199,24 +199,28 @@ function formatUptime(uptime) {
     return uptime;
 }
 
+/**
+API.ai integration for default case.
+*/
+
+var apiai = require('apiai');
+var apiai_app = apiai(
+  process.env.APIAI_ACC, process.env.APIAI_SUB
+);
+
 controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    bot.api.reactions.add({
-        timestamp: message.ts,
-        channel: message.channel,
-        name: 'thinking_face',
-    },function(err, res) {
-        if (err) {
-            bot.botkit.log('Failed to add emoji reaction :(',err);
-        }
+    var apiai_request = apiai_app.textRequest(message.text);
+    apiai_request.on('response', function(response) {
+        bot.reply(response.text);
     });
-
-
-    controller.storage.users.get(message.user,function(err, user) {
-        if (user && user.name) {
-            bot.reply(message,'I don\'t understand you yet ' + user.name + '!!');
-        } else {
-            bot.reply(message,'I don\'t understand you yet.');
-        }
+    request.on('error', function(error) {
+      controller.storage.users.get(message.user,function(err, user) {
+          if (user && user.name) {
+              bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name + ' :sad_face:');
+          } else {
+              bot.reply(message,'Sorry, I don\'t understand that yet :sad_face:');
+          }
+      });
     });
+    apiai_request.end();
 });
