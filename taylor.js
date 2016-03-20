@@ -137,9 +137,9 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
 
     controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
-            bot.reply(message,'Your name is ' + user.name);
+            bot.reply(message,'Tu nombre es ' + user.name);
         } else {
-            bot.reply(message,'I don\'t know yet!');
+            bot.reply(message,'Todavia no se!');
         }
     });
 });
@@ -148,12 +148,13 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
 
     controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
-            bot.reply(message,'Tu nombre es ' + user.name);
+            bot.reply(message,'Your name is ' + user.name);
         } else {
-            bot.reply(message,'No se!');
+            bot.reply(message,'I don\'t know yet!');
         }
     });
 });
+
 
 controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
 
