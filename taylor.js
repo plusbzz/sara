@@ -144,6 +144,16 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
     });
 });
 
+controller.hears(['what is my name','who am i'],'direct_message,direct_mention,mention',function(bot, message) {
+
+    controller.storage.users.get(message.user,function(err, user) {
+        if (user && user.name) {
+            bot.reply(message,'Tu nombre es ' + user.name);
+        } else {
+            bot.reply(message,'No se!');
+        }
+    });
+});
 
 controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
 
