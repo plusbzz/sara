@@ -207,13 +207,18 @@ var apiai = require('apiai');
 var apiai_app = apiai(
   process.env.APIAI_ACC, process.env.APIAI_SUB
 );
+var apiai = require('apiai');
+var apiai_app = apiai(
+  process.env.APIAI_ACC, process.env.APIAI_SUB
+);
 
-controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+controller.hears(['(.*)'],'direct_message,direct_mention,mention',
+  function(bot, message) {
     var apiai_request = apiai_app.textRequest(message.text);
     console.log(message.text)
     apiai_request.on('response', function(response) {
         console.log(response.result.fulfillment.speech)
-        bot.reply(response.result.fulfillment.speech);
+        bot.reply(message,response.result.fulfillment.speech);
     });
     apiai_request.on('error', function(error) {
       controller.storage.users.get(message.user,function(err, user) {
@@ -225,4 +230,36 @@ controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, 
       });
     });
     apiai_request.end();
-});
+  }
+);
+// controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient'],
+//   function(bot,message) {
+//     console.log(message.text);
+//     if (message.type == "message") {
+//         if (message.user == bot.identity.id) {
+//             // message from bot can be skipped
+//         }
+//         else {
+//             var requestText = message.text;
+//             var channel = message.channel;
+//             if (!(channel in sessionIds)) {
+//                 sessionIds[channel] = uuid.v1();
+//             }
+//             var request = apiai_app.textRequest(requestText, { sessionId: sessionIds[channel] });
+//             request.on('response', function (response) {
+//                 console.log(response);
+//                 if (response.result) {
+//                     var responseText = response.result.fulfillment.speech;
+//                     if (responseText) {
+//                         bot.reply(message, responseText);
+//                     }
+//                 }
+//             });
+//             request.on('error', function (error) {
+//                 console.log(error);
+//             });
+//             request.end();
+//         }
+//     }
+//   }
+// );
