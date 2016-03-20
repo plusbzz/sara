@@ -213,7 +213,7 @@ controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, 
     apiai_request.on('response', function(response) {
         bot.reply(response.text);
     });
-    request.on('error', function(error) {
+    apiai_request.on('error', function(error) {
       controller.storage.users.get(message.user,function(err, user) {
           if (user && user.name) {
               bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name + ' :sad_face:');
