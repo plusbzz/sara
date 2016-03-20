@@ -20,6 +20,12 @@ function onInstallation(bot, installer) {
     }
 }
 
+// Create a fake http server to bind port
+var http = require('http');
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.send('it is running\n'); }
+).listen(process.env.PORT || 5000);
 
 
 /**
@@ -52,7 +58,8 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
     var app = require('./lib/apps');
     var controller = app.configure(process.env.PORT, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation);
 } else {
-    console.log('Error: If this is a custom integration, please specify TOKEN in the environment. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
+    console.log('Error: If this is a custom integration, please specify TOKEN in the environment. \
+                  If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
     process.exit(1);
 }
 
