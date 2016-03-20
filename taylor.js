@@ -210,15 +210,17 @@ var apiai_app = apiai(
 
 controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, message) {
     var apiai_request = apiai_app.textRequest(message.text);
+    console.log(message.text)
     apiai_request.on('response', function(response) {
-        bot.reply(response.text);
+        console.log(response)
+        bot.reply(response);
     });
     apiai_request.on('error', function(error) {
       controller.storage.users.get(message.user,function(err, user) {
           if (user && user.name) {
-              bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name + ' :sad_face:');
+              bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
           } else {
-              bot.reply(message,'Sorry, I don\'t understand that yet :sad_face:');
+              bot.reply(message,'Sorry, I don\'t understand that yet.');
           }
       });
     });
