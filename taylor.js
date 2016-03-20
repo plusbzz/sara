@@ -95,6 +95,7 @@ controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
 });
 
+
 controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function(bot, message) {
 
     bot.api.reactions.add({
@@ -130,17 +131,6 @@ controller.hears(['call me (.*)'],'direct_message,direct_mention,mention',functi
         controller.storage.users.save(user,function(err, id) {
             bot.reply(message,'Got it. I will call you ' + user.name + ' from now on.');
         });
-    });
-});
-
-controller.hears(['what is my name','who am i'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    controller.storage.users.get(message.user,function(err, user) {
-        if (user && user.name) {
-            bot.reply(message,'Tu nombre es ' + user.name);
-        } else {
-            bot.reply(message,'Todavia no se!');
-        }
     });
 });
 
@@ -208,3 +198,25 @@ function formatUptime(uptime) {
     uptime = uptime + ' ' + unit;
     return uptime;
 }
+
+controller.hears(['(.*)'],'direct_message,direct_mention,mention',function(bot, message) {
+
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'thinking_face',
+    },function(err, res) {
+        if (err) {
+            bot.botkit.log('Failed to add emoji reaction :(',err);
+        }
+    });
+
+
+    controller.storage.users.get(message.user,function(err, user) {
+        if (user && user.name) {
+            bot.reply(message,'I don\'t understand you yet ' + user.name + '!!');
+        } else {
+            bot.reply(message,'I don\'t understand you yet.');
+        }
+    });
+});
