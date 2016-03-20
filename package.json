@@ -1,32 +1,32 @@
 {
-  "name": "easy-peasy-bot",
+  "name": "taylor",
   "version": "1.0.0",
-  "description": "The awesomest bot evar.",
-  "main": "index.js",
+  "description": "Taylor the Latte Bot.",
+  "main": "taylor.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node taylor.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DEGoodmanWilson/easy-peasy-bot-app.git"
+    "url": "git+https://github.com/plusbzz/taylor.git"
   },
   "keywords": [
     "slack",
     "bot"
   ],
-  "author": "D.E. Goodman-Wilson",
+  "author": "Raj Bandyopadhyay",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app/issues"
-  },
-  "homepage": "https://github.com/DEGoodmanWilson/easy-peasy-bot-app#readme",
+  "bugs": {},
+  "homepage": "https://github.com/plusbzz/taylor#readme",
   "engines": {
-    "node": "5.1.1"
+    "node": "4.4.0"
   },
   "dependencies": {
     "botkit": "0.0.5",
     "botkit-storage-mongo": "^1.0.2",
+    "dotenv": "^2.0.0",
+    "foreman": "1.4.1",
     "mongodb": "^1.4.39"
   }
 }
