@@ -241,11 +241,7 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
         }
         else {
             var requestText = message.text;
-            var channel = message.channel;
-            if (!(channel in sessionIds)) {
-                sessionIds[channel] = uuid.v1();
-            }
-            var request = apiai_app.textRequest(requestText, { sessionId: sessionIds[channel] });
+            var request = apiai_app.textRequest(requestText);
             request.on('response', function (response) {
                 console.log(response);
                 if (response.result) {
