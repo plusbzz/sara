@@ -2,10 +2,6 @@
  * A Bot for Slack!
  */
 
-var SlackClient = require('slack-client');
-var slackClient = SlackClient(process.env.PORT || 5000);
-
-
 /**
  * Define a function for initiating a conversation on installation
  * With custom integrations, we don't have a way to find out who installed us, so we can't message them :(
