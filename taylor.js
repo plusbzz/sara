@@ -226,7 +226,7 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
                     console.log(responseText);
-                    bot.reply(message, responseText||"Sorry, I can't answer that right now :(" );
+                    bot.replyWithTyping(message, responseText||"Sorry, I can't answer that right now :(" );
                 }
             });
             request.on('error', function(error) {
