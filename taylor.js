@@ -92,7 +92,7 @@ controller.on('rtm_close', function (bot) {
 // BEGIN EDITING HERE!
 
 controller.on('bot_channel_join', function (bot, message) {
-    bot.reply(message, "I'm here!")
+    bot.replyWithTyping(message, "I'm here!")
 });
 
 
@@ -111,9 +111,9 @@ controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function
 
     controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
-            bot.reply(message,'Hello ' + user.name + '!!');
+            bot.replyWithTyping(message,'Hello ' + user.name + '!!');
         } else {
-            bot.reply(message,'Hello.');
+            bot.replyWithTyping(message,'Hello.');
         }
     });
 });
@@ -129,7 +129,7 @@ controller.hears(['call me (.*)'],'direct_message,direct_mention,mention',functi
         }
         user.name = name;
         controller.storage.users.save(user,function(err, id) {
-            bot.reply(message,'Got it. I will call you ' + user.name + ' from now on.');
+            bot.replyWithTyping(message,'Got it. I will call you ' + user.name + ' from now on.');
         });
     });
 });
@@ -138,9 +138,9 @@ controller.hears(['what is my name','who am i'],'direct_message,direct_mention,m
 
     controller.storage.users.get(message.user,function(err, user) {
         if (user && user.name) {
-            bot.reply(message,'Your name is ' + user.name);
+            bot.replyWithTyping(message,'Your name is ' + user.name);
         } else {
-            bot.reply(message,'I don\'t know yet!');
+            bot.replyWithTyping(message,'I don\'t know yet!');
         }
     });
 });
@@ -178,7 +178,7 @@ controller.hears(['uptime','identify yourself',
                   'who are you','what is your name'],
                   'direct_message,direct_mention,mention',function(bot, message) {
     var uptime = formatUptime(process.uptime());
-    bot.reply(message,':robot_face: I am <@' + bot.identity.name + '>. I have been running for ' + uptime + '.');
+    bot.replyWithTyping(message,':robot_face: I am <@' + bot.identity.name + '>. I have been running for ' + uptime + '.');
 });
 
 function formatUptime(uptime) {
@@ -212,26 +212,6 @@ var apiai_app = apiai(
   process.env.APIAI_ACC, process.env.APIAI_SUB
 );
 
-// controller.hears(['(.*)'],'direct_message,direct_mention,mention',
-//   function(bot, message) {
-//     var apiai_request = apiai_app.textRequest(message.text);
-//     console.log(message.text)
-//     apiai_request.on('response', function(response) {
-//         console.log(response.result.fulfillment.speech)
-//         bot.reply(message,response.result.fulfillment.speech);
-//     });
-//     apiai_request.on('error', function(error) {
-//       controller.storage.users.get(message.user,function(err, user) {
-//           if (user && user.name) {
-//               bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
-//           } else {
-//               bot.reply(message,'Sorry, I don\'t understand that yet.');
-//           }
-//       });
-//     });
-//     apiai_request.end();
-//   }
-// );
 controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient'],
   function(bot,message) {
     console.log(message.text);
@@ -253,9 +233,9 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
             request.on('error', function(error) {
               controller.storage.users.get(message.user,function(err, user) {
                   if (user && user.name) {
-                      bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
+                      bot.replyWithTyping(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
                   } else {
-                      bot.reply(message,'Sorry, I don\'t understand that yet.');
+                      bot.replyWithTyping(message,"Sorry, I can't answer that right now :(");
                   }
               });
             });
