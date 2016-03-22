@@ -25,12 +25,10 @@
   "dependencies": {
     "@slack/client": "^2.2.1",
     "apiai": "^1.0.8",
-    "botkit": "0.0.12",
+    "botkit": "0.0.5",
     "botkit-storage-mongo": "^1.0.2",
-    "cleverbot.io": "^1.0.4",
     "dotenv": "^2.0.0",
     "foreman": "1.4.1",
-    "mongodb": "^1.4.39",
-    "slack-client": "^2.0.4"
+    "mongodb": "^1.4.39"
   }
 }
