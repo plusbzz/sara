@@ -240,13 +240,13 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
             // message from bot can be skipped
         }
         else {
-          bot.say(message, {"type": "typing"});
             var requestText = message.text;
             var request = apiai_app.textRequest(requestText);
             request.on('response', function (response) {
                 console.log(response);
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
+                    console.log(responseText);
                     bot.replyWithTyping(message, responseText||"Sorry, I can't answer that right now :(" );
                 }
             });
