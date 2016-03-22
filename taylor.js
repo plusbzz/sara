@@ -249,6 +249,7 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
                     var responseText = response.result.fulfillment.speech;
                     bot.startConversation(message, function(err,convo){
                         convo.say({"type": "typing"});
+                        setTimeout(function(){},1000)
                         convo.say(responseText || "Sorry, I can't answer that right now :(");
                       }
                     );
