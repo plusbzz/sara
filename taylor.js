@@ -3,7 +3,7 @@
  */
 
 var SlackClient = require('slack-client');
-var slackClient = new SlackClient(process.env.PORT || 5000);
+var slackClient = SlackClient(process.env.PORT || 5000);
 
 
 /**
