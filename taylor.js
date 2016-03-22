@@ -2,6 +2,10 @@
  * A Bot for Slack!
  */
 
+var SlackClient = require('slack-client');
+var slackClient = new SlackClient(process.env.PORT || 5000);
+
+
 /**
  * Define a function for initiating a conversation on installation
  * With custom integrations, we don't have a way to find out who installed us, so we can't message them :(
@@ -246,6 +250,8 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
                 console.log(response);
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
+                    bot.reply(message, {"type": "typing"});
+                    setTimeout(function(){},1000);
                     if (responseText) {
                         bot.reply(message, responseText);
                     }
