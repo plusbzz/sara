@@ -247,15 +247,7 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
                 console.log(response);
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
-                    bot.startConversation(message, function(err,convo){
-                        convo.say({"type": "typing"});
-                        setTimeout(function(){},1000)
-                        convo.say(responseText || "Sorry, I can't answer that right now :(");
-                      }
-                    );
-                    // if (responseText) {
-                    //     bot.reply(message, responseText);
-                    // }
+                    bot.replyWithTyping(message, responseText||"Sorry, I can't answer that right now :(" );
                 }
             });
             request.on('error', function(error) {
