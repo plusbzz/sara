@@ -23,13 +23,15 @@ function onInstallation(bot, installer) {
 // Create a fake http server to bind port
 var PORT = (process.env.PORT || 5000)
 var http = require('http');
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Server is running\n');
-}).listen(PORT, function(){
-    //Callback triggered when server is successfully listening. Hurray!
-    console.log("Server listening on: http://localhost:%s", PORT);
-});
+if (process.env.TOKEN || process.env.SLACK_TOKEN) {
+  http.createServer(function (req, res) {
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Server is running\n');
+  }).listen(PORT, function(){
+      //Callback triggered when server is successfully listening. Hurray!
+      console.log("Server listening on: http://localhost:%s", PORT);
+  });
+}
 
 /**
  * Configure the persistence options
@@ -59,7 +61,8 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 } else if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
     //Treat this as an app
     var app = require('./lib/apps');
-    var controller = app.configure(process.env.PORT, process.env.CLIENT_ID, process.env.CLIENT_SECRET, config, onInstallation);
+    var controller = app.configure(process.env.PORT, process.env.CLIENT_ID,
+                              process.env.CLIENT_SECRET, config, onInstallation);
 } else {
     console.log('Error: If this is a custom integration, please specify TOKEN in the environment. \
                   If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
@@ -150,7 +153,8 @@ controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(b
 
     bot.startConversation(message,function(err, convo) {
 
-        convo.ask('Are you sure you want me to shutdown?',[
+        convo.ask('Are you sure you want me to shutdown?',
+          [
             {
                 pattern: bot.utterances.yes,
                 callback: function(response, convo) {
@@ -161,15 +165,16 @@ controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(b
                     },3000);
                 }
             },
-        {
-            pattern: bot.utterances.no,
-            default: true,
-            callback: function(response, convo) {
-                convo.say('*Phew!*');
-                convo.next();
+            {
+                pattern: bot.utterances.no,
+                default: true,
+                callback: function(response, convo) {
+                    convo.say('*Phew!*');
+                    convo.next();
+                }
             }
-        }
-        ]);
+        ]
+      );
     });
 });
 
