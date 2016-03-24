@@ -230,8 +230,8 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
             request.on('response', function (response) {
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
-                    console.log(responseText);
-                    bot.replyWithTyping(message, responseText||"Sorry, I can't answer that right now :(" );
+                    console.log("Response Text: " + responseText);
+                    bot.replyWithTyping(message, responseText || "Sorry, I can't answer that right now :(" );
                 }
             });
             request.on('error', function(error) {
@@ -239,7 +239,7 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
                   if (user && user.name) {
                       bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
                   } else {
-                      bot.reply(message,"Sorry, I can't answer that right now :(");
+                      bot.reply(message,"Sorry, I don't understand that right now :(");
                   }
               });
             });
