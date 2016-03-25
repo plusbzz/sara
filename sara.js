@@ -47,10 +47,8 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
     process.exit(1);
 }
 
-module.exports={
-  controller: controller
-}
-var springboard = require('./springboard')
+
+//var springboard = require('./springboard')
 
 
 // Handle events related to the websocket connection to Slack
@@ -92,33 +90,6 @@ controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function
             bot.reply(message,'Hello ' + user.name + '!!');
         } else {
             bot.reply(message,'Hello.');
-        }
-    });
-});
-
-controller.hears(['call me (.*)'],'direct_message,direct_mention,mention',function(bot, message) {
-    var matches = message.text.match(/call me (.*)/i);
-    var name = matches[1];
-    controller.storage.users.get(message.user,function(err, user) {
-        if (!user) {
-            user = {
-                id: message.user,
-            };
-        }
-        user.name = name;
-        controller.storage.users.save(user,function(err, id) {
-            bot.reply(message,'Got it. I will call you ' + user.name + ' from now on.');
-        });
-    });
-});
-
-controller.hears(['what is my name','who am i'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    controller.storage.users.get(message.user,function(err, user) {
-        if (user && user.name) {
-            bot.reply(message,'Your name is ' + user.name);
-        } else {
-            bot.reply(message,'I don\'t know yet!');
         }
     });
 });
@@ -220,6 +191,32 @@ controller.hears(['.*'],['direct_message','direct_mention'],
             });
             request.end();
         }
+    }
+  }
+);
+
+controller.on('slash_command', function (slashCommand, message) {
+    switch (message.command) {
+        case "/owl":
+            // but first, let's make sure the token matches!
+            if (message.token !== process.env.SLASH_TOKEN) return; //just ignore it.
+
+            // if no text was supplied, treat it as a help command
+            if (message.text === "" || message.text === "help") {
+                slashCommand.replyPrivate(message,
+                    "Usage: /owl [query]");
+                return;
+            }
+
+            // If we made it here, just echo what the user typed back at them
+            //TODO You do it!
+            slashCommand.replyPublic(message, "1", function() {
+                slashCommand.replyPublicDelayed(message, "2").then(slashCommand.replyPublicDelayed(message, "3"));
+            });
+
+            break;
+        default:
+            slashCommand.replyPublic(message, "I'm afraid I don't know how to " + message.command + " yet.");
     }
   }
 );
