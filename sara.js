@@ -39,7 +39,6 @@ if (process.env.MONGOLAB_URI) {
 if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
     //Treat this as an app
     var app = require('./lib/apps');
-    var springboard = require('./springboard')
     var controller = app.configure(process.env.PORT, process.env.CLIENT_ID,
                               process.env.CLIENT_SECRET, config, onInstallation);
 } else {
@@ -48,6 +47,10 @@ if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
     process.exit(1);
 }
 
+module.exports={
+  controller: controller
+}
+var springboard = require('./springboard')
 
 
 // Handle events related to the websocket connection to Slack
