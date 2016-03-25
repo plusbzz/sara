@@ -13,8 +13,7 @@ function onInstallation(bot, installer) {
             if (err) {
                 console.log(err);
             } else {
-                convo.say("Hi there, I'm Taylor. I'm a bot that has just joined your team.");
-                convo.say('You can now /invite me to a channel so that I can be of use!');
+                convo.say("Hi there, I'm Sara from Springboard.");
             }
         });
     }
@@ -32,22 +31,15 @@ if (process.env.MONGOLAB_URI) {
     };
 } else {
     config = {
-        json_file_store: ((process.env.TOKEN)?'./db_taylor_ci/':'./db_slack_bot_a/'), //use a different name if an app or CI
+        json_file_store: ((process.env.TOKEN)?'./db_sara_ci/':'./db_slack_bot_a/'), //use a different name if an app or CI
     };
 }
 
-/**
- * Are being run as an app or a custom integration? The initialization will differ, depending
- */
 
-if (process.env.TOKEN || process.env.SLACK_TOKEN) {
-    //Treat this as a custom integration
-    var customIntegration = require('./lib/custom_integrations');
-    var token = (process.env.TOKEN) ? process.env.TOKEN : process.env.SLACK_TOKEN;
-    var controller = customIntegration.configure(token, config, onInstallation);
-} else if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
+if (process.env.CLIENT_ID && process.env.CLIENT_SECRET && process.env.PORT) {
     //Treat this as an app
     var app = require('./lib/apps');
+    var springboard = require('./springboard')
     var controller = app.configure(process.env.PORT, process.env.CLIENT_ID,
                               process.env.CLIENT_SECRET, config, onInstallation);
 } else {

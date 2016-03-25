@@ -1,15 +1,15 @@
 {
-  "name": "taylor",
-  "version": "1.0.0",
-  "description": "Taylor the Latte Bot.",
-  "main": "taylor.js",
+  "name": "sara",
+  "version": "0.0.1",
+  "description": "Sara from Springboard",
+  "main": "sara.js",
   "scripts": {
-    "start": "node taylor.js",
+    "start": "node sara.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/plusbzz/taylor.git"
+    "url": "git+https://github.com/plusbzz/sara.git"
   },
   "keywords": [
     "slack",
@@ -18,7 +18,7 @@
   "author": "Raj Bandyopadhyay",
   "license": "MIT",
   "bugs": {},
-  "homepage": "https://github.com/plusbzz/taylor#readme",
+  "homepage": "https://github.com/plusbzz/sara#readme",
   "engines": {
     "node": "4.4.0"
   },
