@@ -20,19 +20,6 @@ function onInstallation(bot, installer) {
     }
 }
 
-// Create a fake http server to bind port
-var PORT = (process.env.PORT || 5000)
-var http = require('http');
-if (process.env.TOKEN || process.env.SLACK_TOKEN) {
-  http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Server is running\n');
-  }).listen(PORT, function(){
-      //Callback triggered when server is successfully listening. Hurray!
-      console.log("Server listening on: http://localhost:%s", PORT);
-  });
-}
-
 /**
  * Configure the persistence options
  */
