@@ -57,14 +57,7 @@ if (process.env.TOKEN || process.env.SLACK_TOKEN) {
 }
 
 
-/**
- * A demonstration for how to handle websocket events. In this case, just log when we have and have not
- * been disconnected from the websocket. In the future, it would be super awesome to be able to specify
- * a reconnect policy, and do reconnections automatically. In the meantime, we aren't going to attempt reconnects,
- * WHICH IS A B0RKED WAY TO HANDLE BEING DISCONNECTED. So we need to fix this.
- *
- * TODO: fixed b0rked reconnect behavior
- */
+
 // Handle events related to the websocket connection to Slack
 controller.on('rtm_open', function (bot) {
     console.log('** The RTM api just connected!');
@@ -165,58 +158,57 @@ controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(b
     });
 });
 
-
-controller.hears(['uptime','identify yourself',
-                  'who are you','what is your name'],
-                  'direct_message,direct_mention,mention',function(bot, message) {
-    var uptime = formatUptime(process.uptime());
-    bot.reply(message,':robot_face: I am <@' + bot.identity.name + '>. I have been running for ' + uptime + '.');
-});
-
-function formatUptime(uptime) {
-    var unit = 'second';
-    if (uptime > 60) {
-        uptime = uptime / 60;
-        unit = 'minute';
-    }
-    if (uptime > 60) {
-        uptime = uptime / 60;
-        unit = 'hour';
-    }
-    if (uptime != 1) {
-        unit = unit + 's';
+function isDefined(obj) {
+    if (typeof obj == 'undefined') {
+        return false;
     }
 
-    uptime = uptime + ' ' + unit;
-    return uptime;
+    if (!obj) {
+        return false;
+    }
+
+    return obj != null;
 }
-
 /**
 API.ai integration for default case.
 */
+const uuid = require('node-uuid');
 
-var apiai = require('apiai');
-var apiai_app = apiai(
-  process.env.APIAI_ACC, process.env.APIAI_SUB
-);
-var apiai = require('apiai');
+const sessionIds = new Map();
+const apiai = require('apiai');
 var apiai_app = apiai(
   process.env.APIAI_ACC, process.env.APIAI_SUB
 );
 
 controller.hears(['.*'],['direct_message','direct_mention'],
   function(bot,message) {
-    console.log(message.text);
     if (message.type == "message") {
         if (message.user == bot.identity.id) {
             // message from bot can be skipped
-        }
-        else {
+        } else if (message.text.indexOf("<@U") == 0 && message.text.indexOf(bot.identity.id) == -1) {
+            // skip other users direct mentions
+        } else {
             var requestText = message.text;
-            var request = apiai_app.textRequest(requestText);
+
+            var channel = message.channel;
+            var messageType = message.event;
+            var botId = '<@' + bot.identity.id + '>';
+            console.log(requestText);
+            console.log(messageType);
+            if (requestText.indexOf(botId) > -1) {
+                requestText = requestText.replace(botId, '');
+            }
+            if (!sessionIds.has(channel)) {
+                sessionIds.set(channel, uuid.v1());
+            }
+
+            var request = apiai_app.textRequest(requestText, {
+                        sessionId: sessionIds.get(channel)
+            });
             request.on('response', function (response) {
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
+                    var action = response.result.action;
                     console.log("Response Text: " + responseText);
                     bot.replyWithTyping(message, responseText || "Sorry, I can't answer that right now :(" );
                 }

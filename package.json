@@ -29,6 +29,7 @@
     "botkit-storage-mongo": "^1.0.2",
     "dotenv": "^2.0.0",
     "foreman": "1.4.1",
-    "mongodb": "^1.4.39"
+    "mongodb": "^1.4.39",
+    "node-uuid": "^1.4.7"
   }
 }
