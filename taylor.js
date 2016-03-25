@@ -217,7 +217,7 @@ var apiai_app = apiai(
   process.env.APIAI_ACC, process.env.APIAI_SUB
 );
 
-controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient'],
+controller.hears(['.*'],['direct_message','direct_mention'],
   function(bot,message) {
     console.log(message.text);
     if (message.type == "message") {
@@ -235,6 +235,7 @@ controller.hears(['.*'],['direct_message','direct_mention','mention', 'ambient']
                 }
             });
             request.on('error', function(error) {
+              console.log(error);
               controller.storage.users.get(message.user,function(err, user) {
                   if (user && user.name) {
                       bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
