@@ -129,6 +129,9 @@ var searchKnowledgeOwl = function(botFunc,message){
       if (response.valid && response.data.length){
         attach = [];
         for (i=0; i < response.data.length;i++) {
+            if (i == 5) {
+              break;
+            };
             res = response.data[i];
             console.log(res);
             attach.push({
