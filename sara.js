@@ -112,12 +112,11 @@ var restClient = new RestClient();
 restClient.registerMethod("jsonMethod", "https://app.knowledgeowl.com/api/head/suggest.json", "GET");
 const baseURL = "https://help.springboard.com/help/article/link/"
 
-controller.hears(['owl (.*)'],'direct_message,direct_mention',function(bot, message) {
-  responseMessage = searchKnowledgeOwl(message);
-  bot.reply(message,responseMessage);
+controller.hears(['owl (.*)'],'direct_message',function(bot, message) {
+  searchKnowledgeOwl(bot.replyWithTyping,message);
 });
 
-var searchKnowledgeOwl = function(message){
+var searchKnowledgeOwl = function(botFunc,message){
   var args = {
     parameters: {
       project_id: process.env.KNOWL_KB_ID,
@@ -147,10 +146,31 @@ var searchKnowledgeOwl = function(message){
         };
       }
       console.log(responseMessage);
-      return responseMessage;
+      botFunc(message,responseMessage);
   });
 }
 
+
+controller.on('slash_command', function (slashCommand, message) {
+    switch (message.command) {
+        case "/owl":
+            // but first, let's make sure the token matches!
+            if (message.token !== process.env.SLASH_TOKEN) return; //just ignore it.
+
+            // if no text was supplied, treat it as a help command
+            if (message.text === "" || message.text === "help") {
+                slashCommand.replyPrivate(message,
+                    "Usage: /owl [query]");
+                return;
+            }
+
+            responseMessage = searchKnowledgeOwl(slashCommand.replyPrivate,message);
+            break;
+        default:
+            slashCommand.replyPrivate(message, "I'm afraid I don't know how to " + message.command + " yet.");
+    }
+  }
+);
 
 /**
 API.ai integration for default case.
@@ -208,30 +228,6 @@ controller.hears(['.*'],['direct_message','direct_mention'],
             });
             request.end();
         }
-    }
-  }
-);
-
-controller.on('slash_command', function (slashCommand, message) {
-    switch (message.command) {
-        case "/owl":
-            // but first, let's make sure the token matches!
-            if (message.token !== process.env.SLASH_TOKEN) return; //just ignore it.
-
-            // if no text was supplied, treat it as a help command
-            if (message.text === "" || message.text === "help") {
-                slashCommand.replyPrivate(message,
-                    "Usage: /owl [query]");
-                return;
-            }
-
-            // If we made it here, just echo what the user typed back at them
-            responseMessage = searchKnowledgeOwl(message);
-            slashCommand.replyPrivate(message, responseMessage);
-
-            break;
-        default:
-            slashCommand.replyPrivate(message, "I'm afraid I don't know how to " + message.command + " yet.");
     }
   }
 );
