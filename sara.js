@@ -94,36 +94,6 @@ controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function
     });
 });
 
-
-controller.hears(['shutdown'],'direct_message,direct_mention,mention',function(bot, message) {
-
-    bot.startConversation(message,function(err, convo) {
-
-        convo.ask('Are you sure you want me to shutdown?',
-          [
-            {
-                pattern: bot.utterances.yes,
-                callback: function(response, convo) {
-                    convo.say('Bye!');
-                    convo.next();
-                    setTimeout(function() {
-                        process.exit();
-                    },3000);
-                }
-            },
-            {
-                pattern: bot.utterances.no,
-                default: true,
-                callback: function(response, convo) {
-                    convo.say('*Phew!*');
-                    convo.next();
-                }
-            }
-        ]
-      );
-    });
-});
-
 function isDefined(obj) {
     if (typeof obj == 'undefined') {
         return false;
@@ -135,6 +105,53 @@ function isDefined(obj) {
 
     return obj != null;
 }
+
+
+var RestClient = require('node-rest-client').Client;
+var restClient = new RestClient();
+restClient.registerMethod("jsonMethod", "https://app.knowledgeowl.com/api/head/suggest.json", "GET");
+const baseURL = "https://help.springboard.com/help/article/link/"
+
+controller.hears(['owl (.*)'],'direct_message,direct_mention',function(bot, message) {
+  responseMessage = searchKnowledgeOwl(message);
+  bot.reply(message,responseMessage);
+});
+
+var searchKnowledgeOwl = function(message){
+  var args = {
+    parameters: {
+      project_id: process.env.KNOWL_KB_ID,
+      _authbykey: process.env.KNOWL_KEY,
+      phrase: message.text
+    }
+  };
+  restClient.methods.jsonMethod(args, function (response) {
+      console.log(response);
+      if (response.valid && response.data.length){
+        attach = [];
+        for (i=0; i < response.data.length;i++) {
+            res = response.data[i];
+            console.log(res);
+            attach.push({
+                title: res.name,
+                title_link: baseURL + res.url_hash
+            });
+        };
+        responseMessage = {
+          text: "Here are a few results that might help:",
+          attachments: attach
+        };
+      } else {
+        responseMessage = {
+          text: "No results! Try another query, perhaps?",
+        };
+      }
+      console.log(responseMessage);
+      return responseMessage;
+  });
+}
+
+
 /**
 API.ai integration for default case.
 */
@@ -209,14 +226,12 @@ controller.on('slash_command', function (slashCommand, message) {
             }
 
             // If we made it here, just echo what the user typed back at them
-            //TODO You do it!
-            slashCommand.replyPublic(message, "1", function() {
-                slashCommand.replyPublicDelayed(message, "2").then(slashCommand.replyPublicDelayed(message, "3"));
-            });
+            responseMessage = searchKnowledgeOwl(message);
+            slashCommand.replyPrivate(message, responseMessage);
 
             break;
         default:
-            slashCommand.replyPublic(message, "I'm afraid I don't know how to " + message.command + " yet.");
+            slashCommand.replyPrivate(message, "I'm afraid I don't know how to " + message.command + " yet.");
     }
   }
 );
