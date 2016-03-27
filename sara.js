@@ -94,17 +94,13 @@ controller.hears(['hello','hi'],'direct_message,direct_mention,mention',function
     });
 });
 
-function isDefined(obj) {
-    if (typeof obj == 'undefined') {
-        return false;
-    }
-
-    if (!obj) {
-        return false;
-    }
-
-    return obj != null;
-}
+// TODO: separate module
+var truncate = function(s, n, useWordBoundary){
+    var isTooLong = s.length > n;
+    var s_ = isTooLong ? s.substr(0,n-1) : s;
+    s_ = (useWordBoundary && isTooLong) ? s_.substr(0,s_.lastIndexOf(' ')) : s_;
+    return  isTooLong ? s_ + '&hellip;' : s_;
+};
 
 
 var RestClient = require('node-rest-client').Client;
@@ -116,6 +112,7 @@ controller.hears(['owl (.*)'],'direct_message',function(bot, message) {
   searchKnowledgeOwl(bot.replyWithTyping,message);
 });
 
+// TODO: separate module
 var searchKnowledgeOwl = function(botFunc,message){
   var args = {
     parameters: {
@@ -137,7 +134,7 @@ var searchKnowledgeOwl = function(botFunc,message){
             attach.push({
                 title: res.name,
                 title_link: baseURL + res.url_hash,
-                text: res.summary
+                text: truncate(res.summary, 100, true)
             });
         };
         responseMessage = {
