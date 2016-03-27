@@ -129,14 +129,15 @@ var searchKnowledgeOwl = function(botFunc,message){
       if (response.valid && response.data.length){
         attach = [];
         for (i=0; i < response.data.length;i++) {
-            if (i == 5) {
+            if (i == 3) {
               break;
             };
             res = response.data[i];
             console.log(res);
             attach.push({
                 title: res.name,
-                title_link: baseURL + res.url_hash
+                title_link: baseURL + res.url_hash,
+                text: res.summary
             });
         };
         responseMessage = {
