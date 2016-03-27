@@ -99,7 +99,7 @@ var truncate = function(s, n, useWordBoundary){
     var isTooLong = s.length > n;
     var s_ = isTooLong ? s.substr(0,n-1) : s;
     s_ = (useWordBoundary && isTooLong) ? s_.substr(0,s_.lastIndexOf(' ')) : s_;
-    return  isTooLong ? s_ + '&hellip;' : s_;
+    return s_;
 };
 
 
@@ -134,7 +134,7 @@ var searchKnowledgeOwl = function(botFunc,message){
             attach.push({
                 title: res.name,
                 title_link: baseURL + res.url_hash,
-                text: truncate(res.summary, 100, true)
+                text: res.summary
             });
         };
         responseMessage = {
