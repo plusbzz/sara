@@ -187,49 +187,51 @@ var apiai_app = apiai(
 controller.hears(['.*'],['direct_message','direct_mention'],
   function(bot,message) {
     if (message.type == "message") {
-        if (message.user == bot.identity.id) {
-            // message from bot can be skipped
+        if (message.user == bot.identity.id) { // message from bot can be skipped
         } else if (message.text.indexOf("<@U") == 0 && message.text.indexOf(bot.identity.id) == -1) {
             // skip other users direct mentions
         } else {
             var requestText = message.text;
-
             var channel = message.channel;
             var messageType = message.event;
             var botId = '<@' + bot.identity.id + '>';
             console.log(requestText);
             console.log(messageType);
             if (requestText.indexOf(botId) > -1) {
-                requestText = requestText.replace(botId, '');
+              requestText = requestText.replace(botId, '');
             }
             if (!sessionIds.has(channel)) {
-                sessionIds.set(channel, uuid.v1());
+              sessionIds.set(channel, uuid.v1());
             }
-
             var request = apiai_app.textRequest(requestText, {
-                        sessionId: sessionIds.get(channel)
+              sessionId: sessionIds.get(channel)
             });
-            request.on('response', function (response) {
-                if (response.result) {
-                    var responseText = response.result.fulfillment.speech;
-                    var action = response.result.action;
-                    console.log("API.ai response: %j", response );
-                    console.log("Response Text: " + responseText);
+            request.on('response', function(response){
+              if (response.result) {
+                var responseText = response.result.fulfillment.speech;
+                console.log("Response Text: " + responseText);
+                console.log("API.ai response: %j", response );
+                var action = response.result.action;
+                switch (action) {
+                  case "owl.search":
+                      var searchQuery = response.result.parameters['owl-key'];
+                      bot.startConversation(message,function(err,convo) {
+                        convo.say(responseText);
+                        searchKnowledgeOwl(convo.say, message);
+                      });
+                    break;
+                  default:
                     bot.replyWithTyping(message, responseText || "Sorry, I can't answer that right now :(" );
                 }
+              }
             });
             request.on('error', function(error) {
-              console.log(error);
-              controller.storage.users.get(message.user,function(err, user) {
-                  if (user && user.name) {
-                      bot.reply(message,'Sorry, I don\'t understand that yet ' + user.name +'.');
-                  } else {
-                      bot.reply(message,"Sorry, I don't understand that right now :(");
-                  }
-              });
+              bot.replyWithTyping(message,"Sorry, I don't understand that right now :(");
             });
             request.end();
         }
     }
   }
 );
+
+var apiaiResponseHandler =
