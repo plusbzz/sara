@@ -213,6 +213,7 @@ controller.hears(['.*'],['direct_message','direct_mention'],
                 if (response.result) {
                     var responseText = response.result.fulfillment.speech;
                     var action = response.result.action;
+                    console.log("API.ai response: %j", response );
                     console.log("Response Text: " + responseText);
                     bot.replyWithTyping(message, responseText || "Sorry, I can't answer that right now :(" );
                 }
