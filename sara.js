@@ -215,10 +215,8 @@ controller.hears(['.*'],['direct_message','direct_mention'],
                 switch (action) {
                   case "owl.search":
                       var searchQuery = response.result.parameters['owl-key'];
-                      bot.startConversation(message,function(err,convo) {
-                        convo.say(responseText);
-                        searchKnowledgeOwl(convo.say, message);
-                      });
+                      message.text = searchQuery;
+                      searchKnowledgeOwl(bot.replyWithTyping,message);;
                     break;
                   default:
                     bot.replyWithTyping(message, responseText || "Sorry, I can't answer that right now :(" );
@@ -233,5 +231,3 @@ controller.hears(['.*'],['direct_message','direct_mention'],
     }
   }
 );
-
-var apiaiResponseHandler =
