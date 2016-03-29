@@ -109,16 +109,17 @@ restClient.registerMethod("jsonMethod", "https://app.knowledgeowl.com/api/head/s
 const baseURL = "https://help.springboard.com/help/article/link/"
 
 controller.hears(['owl (.*)'],'direct_message',function(bot, message) {
-  searchKnowledgeOwl(bot.replyWithTyping,message);
+  var responseMessage = searchKnowledgeOwl(message.text);
+  bot.replyWithTyping(message,responseMessage);
 });
 
 // TODO: separate module
-var searchKnowledgeOwl = function(botFunc,message){
+var searchKnowledgeOwl = function(mtext){
   var args = {
     parameters: {
       project_id: process.env.KNOWL_KB_ID,
       _authbykey: process.env.KNOWL_KEY,
-      phrase: message.text
+      phrase: mtext
     }
   };
   restClient.methods.jsonMethod(args, function (response) {
@@ -147,7 +148,7 @@ var searchKnowledgeOwl = function(botFunc,message){
         };
       }
       console.log(responseMessage);
-      botFunc(message,responseMessage);
+      return responseMessage;
   });
 }
 
@@ -165,7 +166,8 @@ controller.on('slash_command', function (slashCommand, message) {
                 return;
             }
 
-            responseMessage = searchKnowledgeOwl(slashCommand.replyPrivate,message);
+            var responseMessage = searchKnowledgeOwl(message.text);
+            slashCommand.replyPrivate(message,responseMessage);
             break;
         default:
             slashCommand.replyPrivate(message, "I'm afraid I don't know how to " + message.command + " yet.");
@@ -215,8 +217,8 @@ controller.hears(['.*'],['direct_message','direct_mention'],
                 switch (action) {
                   case "owl.search":
                       var searchQuery = response.result.parameters['owl-key'];
-                      message.text = searchQuery;
-                      searchKnowledgeOwl(bot.replyWithTyping,message);;
+                      var responseMessage = searchKnowledgeOwl(searchQuery);
+                      bot.replyWithTyping(message,responseMessage);
                     break;
                   default:
                     bot.replyWithTyping(message, responseText || "Sorry, I can't answer that right now :(" );
